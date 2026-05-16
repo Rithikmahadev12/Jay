@@ -424,7 +424,7 @@
         html += `
           <div class="result-card" style="animation-delay:${Math.min(i * 0.04, 0.2)}s">
             <div class="result-url">${escHtml(r.displayUrl || r.url)}</div>
-            <a class="result-title" href="${escHtml(r.url)}" target="_blank" rel="noopener">${escHtml(r.title)}</a>
+            <a class="result-title" href="${escHtml(r.url)}">${escHtml(r.title)}</a>
             <div class="result-snippet">${escHtml(r.snippet)}</div>
           </div>
           ${i < data.results.length - 1 ? '<hr class="divider">' : ''}

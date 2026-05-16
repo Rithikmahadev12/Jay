@@ -32,7 +32,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── NOISE OVERLAY ── */
     body::before {
       content: '';
       position: fixed;
@@ -43,14 +42,13 @@
       opacity: 0.5;
     }
 
-    /* ══════════════ HOME PAGE ══════════════ */
+    /* ══════════════ HOME ══════════════ */
     #home {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      gap: 0;
       position: relative;
       z-index: 1;
       animation: fadeIn 0.6s ease both;
@@ -58,29 +56,21 @@
 
     .home-glow {
       position: absolute;
-      width: 520px;
-      height: 520px;
+      width: 520px; height: 520px;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(79,139,255,0.08) 0%, transparent 70%);
       pointer-events: none;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -60%);
     }
 
-    .logo-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 40px;
-    }
+    .logo-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
 
     .logo {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(72px, 12vw, 120px);
       letter-spacing: 0.04em;
       line-height: 1;
-      color: var(--text);
       background: linear-gradient(135deg, #ffffff 30%, #4f8bff 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -96,11 +86,7 @@
       margin-top: -4px;
     }
 
-    /* ── SEARCH BOX ── */
-    .search-wrap {
-      position: relative;
-      width: min(580px, 90vw);
-    }
+    .search-wrap { position: relative; width: min(580px, 90vw); }
 
     .search-input {
       width: 100%;
@@ -118,7 +104,6 @@
     }
 
     .search-input::placeholder { color: var(--muted); }
-
     .search-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-glow), 0 8px 32px rgba(0,0,0,0.4);
@@ -126,172 +111,92 @@
 
     .search-btn {
       position: absolute;
-      right: 10px;
-      top: 50%;
+      right: 10px; top: 50%;
       transform: translateY(-50%);
-      width: 38px;
-      height: 38px;
+      width: 38px; height: 38px;
       background: var(--accent);
-      border: none;
-      border-radius: 9px;
+      border: none; border-radius: 9px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       transition: background 0.15s, transform 0.15s;
     }
-
     .search-btn:hover { background: #6fa3ff; transform: translateY(-50%) scale(1.05); }
     .search-btn:active { transform: translateY(-50%) scale(0.97); }
-
     .search-btn svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; }
 
     /* ══════════════ RESULTS PAGE ══════════════ */
-    #results-page {
-      display: none;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
-    }
+    #results-page { display: none; min-height: 100vh; position: relative; z-index: 1; }
 
-    /* ── TOP BAR ── */
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 100;
       background: rgba(6,6,8,0.85);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
+      display: flex; align-items: center; gap: 20px;
     }
 
     .topbar-logo {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 0.05em;
+      font-size: 28px; letter-spacing: 0.05em;
       background: linear-gradient(135deg, #ffffff 30%, #4f8bff 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      cursor: pointer;
-      flex-shrink: 0;
-      user-select: none;
+      cursor: pointer; flex-shrink: 0; user-select: none;
     }
 
     .topbar .search-wrap { width: min(560px, calc(100vw - 160px)); }
-
-    .topbar .search-input {
-      padding: 12px 50px 12px 18px;
-      font-size: 15px;
-      border-radius: 10px;
-    }
-
+    .topbar .search-input { padding: 12px 50px 12px 18px; font-size: 15px; border-radius: 10px; }
     .topbar .search-btn { width: 32px; height: 32px; border-radius: 7px; right: 9px; }
 
-    /* ── RESULTS BODY ── */
-    .results-body {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 32px 24px 64px;
-    }
+    .results-body { max-width: 720px; margin: 0 auto; padding: 32px 24px 64px; }
 
-    .results-meta {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 24px;
-      letter-spacing: 0.02em;
-    }
+    .results-meta { font-size: 12px; color: var(--muted); margin-bottom: 24px; letter-spacing: 0.02em; }
 
-    .result-card {
-      margin-bottom: 28px;
-      animation: slideUp 0.35s ease both;
-    }
-
+    .result-card { margin-bottom: 28px; animation: slideUp 0.35s ease both; }
     .result-card:nth-child(2) { animation-delay: 0.05s; }
     .result-card:nth-child(3) { animation-delay: 0.08s; }
     .result-card:nth-child(4) { animation-delay: 0.11s; }
     .result-card:nth-child(5) { animation-delay: 0.14s; }
     .result-card:nth-child(n+6) { animation-delay: 0.17s; }
 
-    .result-url {
-      font-size: 12px;
-      color: var(--url-color);
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      letter-spacing: 0.01em;
-    }
+    .result-url { font-size: 12px; color: var(--url-color); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.01em; }
 
+    /* Button styled as link — opens iframe panel instead of navigating */
     .result-title {
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--accent);
-      text-decoration: none;
-      line-height: 1.3;
-      display: block;
-      margin-bottom: 6px;
+      font-size: 18px; font-weight: 500; color: var(--accent);
+      line-height: 1.3; display: block; margin-bottom: 6px;
       transition: color 0.15s;
+      background: none; border: none; padding: 0;
+      cursor: pointer; font-family: 'Outfit', sans-serif;
+      text-align: left; text-decoration: none;
     }
-
     .result-title:hover { color: #6fa3ff; text-decoration: underline; text-underline-offset: 3px; }
 
-    .result-snippet {
-      font-size: 14px;
-      color: #9898aa;
-      line-height: 1.6;
-    }
+    .result-snippet { font-size: 14px; color: #9898aa; line-height: 1.6; }
 
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 28px 0;
-    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
 
-    /* ── PAGINATION ── */
-    .pagination {
-      display: flex;
-      gap: 10px;
-      margin-top: 40px;
-      align-items: center;
-    }
+    .pagination { display: flex; gap: 10px; margin-top: 40px; align-items: center; }
 
     .page-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 14px;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      padding: 10px 20px; border-radius: 8px; font-family: 'Outfit', sans-serif;
+      font-size: 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
     }
-
     .page-btn:hover { border-color: var(--accent); background: var(--surface2); }
     .page-btn:disabled { opacity: 0.3; cursor: default; }
     .page-btn.active { border-color: var(--accent); color: var(--accent); }
 
-    /* ── STATES ── */
     .state-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 80px 24px;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 15px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 80px 24px; gap: 12px; color: var(--muted); font-size: 15px;
     }
-
     .state-box svg { width: 40px; height: 40px; opacity: 0.3; margin-bottom: 8px; }
 
     .spinner {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       border: 2px solid var(--border);
       border-top-color: var(--accent);
       border-radius: 50%;
@@ -300,12 +205,96 @@
 
     .error-msg { color: var(--danger); font-size: 14px; }
 
-    /* ── ANIMATIONS ── */
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    /* ══════════════ CHAT BUBBLE (no-API conversational fallback) ══════════════ */
+    .chat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 26px 28px;
+      animation: slideUp 0.3s ease both;
+    }
+    .chat-label {
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .chat-label::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); display: inline-block;
+    }
+    .chat-text { font-size: 15px; line-height: 1.75; color: var(--text); }
+    .chat-hint { margin-top: 16px; font-size: 13px; color: var(--muted); }
 
-    /* ── SCROLLBAR ── */
+    /* ══════════════ IFRAME PANEL ══════════════ */
+    #iframe-modal { display: none; position: fixed; inset: 0; z-index: 500; }
+
+    #iframe-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(3px);
+    }
+
+    #iframe-panel {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: min(940px, 100vw);
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      animation: slideInRight 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+    #iframe-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    #iframe-close {
+      width: 30px; height: 30px;
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--muted); font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, color 0.15s; flex-shrink: 0;
+      font-family: 'Outfit', sans-serif;
+    }
+    #iframe-close:hover { border-color: var(--danger); color: var(--danger); }
+
+    #iframe-url-bar {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 6px 12px; font-size: 12px; color: var(--muted);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    #iframe-new-tab {
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--muted); font-size: 12px; padding: 6px 12px;
+      cursor: pointer; white-space: nowrap; text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    #iframe-new-tab:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Shown when the site blocks iframing */
+    #iframe-blocked {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; flex: 1; padding: 40px; text-align: center;
+      color: var(--muted); font-size: 14px;
+    }
+    #iframe-blocked svg { width: 44px; height: 44px; opacity: 0.25; }
+    #iframe-blocked a { color: var(--accent); text-decoration: underline; font-size: 14px; }
+
+    #iframe-viewer { flex: 1; border: none; background: #fff; }
+
+    /* ══════════════ ANIMATIONS ══════════════ */
+    @keyframes fadeIn  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes spin    { to { transform: rotate(360deg); } }
+
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
@@ -313,42 +302,67 @@
 </head>
 <body>
 
-  <!-- ══ HOME ══ -->
-  <div id="home">
-    <div class="home-glow"></div>
-    <div class="logo-wrap">
-      <div class="logo">Jay's</div>
-      <div class="logo-sub">Search the web</div>
-    </div>
+<!-- ══ HOME ══ -->
+<div id="home">
+  <div class="home-glow"></div>
+  <div class="logo-wrap">
+    <div class="logo">Jay's</div>
+    <div class="logo-sub">Search the web</div>
+  </div>
+  <div class="search-wrap">
+    <input id="home-input" class="search-input" type="text" placeholder="What are you looking for?" autocomplete="off" />
+    <button class="search-btn" onclick="doSearch(document.getElementById('home-input').value)">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ══ RESULTS PAGE ══ -->
+<div id="results-page">
+  <div class="topbar">
+    <div class="topbar-logo" onclick="goHome()">Jay's</div>
     <div class="search-wrap">
-      <input id="home-input" class="search-input" type="text" placeholder="What are you looking for?" autocomplete="off" />
-      <button class="search-btn" onclick="doSearch(document.getElementById('home-input').value)">
+      <input id="top-input" class="search-input" type="text" placeholder="Search..." autocomplete="off" />
+      <button class="search-btn" onclick="doSearch(document.getElementById('top-input').value)">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
       </button>
     </div>
   </div>
-
-  <!-- ══ RESULTS PAGE ══ -->
-  <div id="results-page">
-    <div class="topbar">
-      <div class="topbar-logo" onclick="goHome()">Jay's</div>
-      <div class="search-wrap">
-        <input id="top-input" class="search-input" type="text" placeholder="Search..." autocomplete="off" />
-        <button class="search-btn" onclick="doSearch(document.getElementById('top-input').value)">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="results-body">
-      <div id="results-container"></div>
-    </div>
+  <div class="results-body">
+    <div id="results-container"></div>
   </div>
+</div>
+
+<!-- ══ IFRAME PANEL ══ -->
+<div id="iframe-modal">
+  <div id="iframe-overlay" onclick="closeIframe()"></div>
+  <div id="iframe-panel">
+    <div id="iframe-bar">
+      <button id="iframe-close" onclick="closeIframe()">✕</button>
+      <div id="iframe-url-bar">—</div>
+      <a id="iframe-new-tab" href="#" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a>
+    </div>
+    <div id="iframe-blocked">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="9"/>
+        <line x1="12" y1="8" x2="12" y2="13"/>
+        <circle cx="12" cy="16.5" r="0.6" fill="currentColor"/>
+      </svg>
+      <span>This site doesn't allow embedding.</span>
+      <a id="iframe-blocked-link" href="#" target="_blank" rel="noopener noreferrer">Open in a new tab instead ↗</a>
+    </div>
+    <iframe
+      id="iframe-viewer"
+      src=""
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox">
+    </iframe>
+  </div>
+</div>
 
 <script>
   let currentQuery = '';
-  let currentPage = 1;
+  let currentPage  = 1;
 
-  // ── Key listeners ──
   document.getElementById('home-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') doSearch(e.target.value);
   });
@@ -356,7 +370,6 @@
     if (e.key === 'Enter') doSearch(e.target.value);
   });
 
-  // ── Parse URL on load ──
   window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(location.search);
     const q = params.get('q');
@@ -372,17 +385,62 @@
     document.getElementById('home-input').focus();
   }
 
+  /* ════════════════════════════════════════════
+     CONVERSATIONAL FALLBACK — no API, pure JS
+     Handles greetings + simple chat so "hi"
+     doesn't show "no results found".
+  ════════════════════════════════════════════ */
+  const CHAT = [
+    {
+      test: /^(hi+|hey+|hello+|howdy|hiya|sup|yo)[\s!?.]*$/i,
+      reply: "Hey! 👋 Jay's is your personal search engine.\nType anything you want to find — websites, topics, URLs — and I'll dig through the index for you."
+    },
+    {
+      test: /^how are (you|u)[\s?]*$|^what'?s up[\s?]*$|^how'?s it going[\s?]*$/i,
+      reply: "All good, thanks! Ready to search. What are you looking for?"
+    },
+    {
+      test: /^(thanks?|thank you|ty|thx)[\s!.]*$/i,
+      reply: "You're welcome! Let me know if you want to search for anything else."
+    },
+    {
+      test: /^(who|what) are you[\s?]*$|^what is (this|jay'?s)[\s?]*$/i,
+      reply: "I'm Jay's — a personal search engine.\nSeed some URLs in /admin, run the crawler, then search anything here."
+    },
+    {
+      test: /^help[\s!?]*$|^how (do i use (this|jay'?s)|does (this|it) work)[\s?]*$/i,
+      reply: "Here's how Jay's works:\n\n1. Go to /admin and add seed URLs (e.g. youtube.com)\n2. Start the crawler — it indexes pages from those seeds\n3. Search anything here and results appear\n\nYou can also paste a URL directly to crawl it on the spot!"
+    },
+    {
+      test: /^(ok|okay|cool|nice|great|awesome|wow|lol|haha|lmao)[\s!.]*$/i,
+      reply: "😄 Let me know what you'd like to search!"
+    },
+    {
+      test: /^(bye|goodbye|cya|see ya|ttyl)[\s!.]*$/i,
+      reply: "Later! Come back whenever you need to search something. 👋"
+    },
+  ];
+
+  function getConversationalReply(query) {
+    const q = query.trim();
+    for (const { test, reply } of CHAT) {
+      if (test.test(q)) return reply;
+    }
+    return null;
+  }
+
+  /* ════════════════════════════════════════════
+     MAIN SEARCH
+  ════════════════════════════════════════════ */
   async function doSearch(query, page = 1, pushState = true) {
     query = (query || '').trim();
     if (!query) return;
 
     currentQuery = query;
-    currentPage = page;
+    currentPage  = page;
 
-    // Switch to results view
     document.getElementById('home').style.display = 'none';
-    const rp = document.getElementById('results-page');
-    rp.style.display = 'block';
+    document.getElementById('results-page').style.display = 'block';
     document.getElementById('top-input').value = query;
 
     if (pushState) {
@@ -392,28 +450,51 @@
 
     const container = document.getElementById('results-container');
 
-    // Detect if query looks like a URL — may need to crawl first
-    const looksLikeUrl = /^https?:\/\//i.test(query) || (!query.includes(' ') && /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(query));
+    /* 1 — Conversational shortcut (no server call needed) */
+    const chatReply = getConversationalReply(query);
+    if (chatReply) {
+      container.innerHTML = `
+        <div class="chat-box">
+          <div class="chat-label">Jay's</div>
+          <div class="chat-text">${escHtml(chatReply).replace(/\n/g, '<br>')}</div>
+          <div class="chat-hint">Try searching for a topic or paste a URL to crawl it.</div>
+        </div>`;
+      return;
+    }
+
+    /* 2 — Loading state */
+    const looksLikeUrl = /^https?:\/\//i.test(query) ||
+      (!query.includes(' ') && /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(query));
+
     if (looksLikeUrl) {
-      container.innerHTML = `<div class="state-box"><div class="spinner"></div><span>Crawling <strong style="color:var(--accent)">${escHtml(query)}</strong> for the first time…<br><small style="color:var(--muted);margin-top:8px;display:block">This takes 10–20 seconds</small></span></div>`;
+      container.innerHTML = `
+        <div class="state-box">
+          <div class="spinner"></div>
+          <span>Crawling <strong style="color:var(--accent)">${escHtml(query)}</strong> for the first time…<br>
+          <small style="color:var(--muted);margin-top:8px;display:block">This takes 10–20 seconds</small></span>
+        </div>`;
     } else {
       container.innerHTML = `<div class="state-box"><div class="spinner"></div><span>Searching…</span></div>`;
     }
 
+    /* 3 — Fetch from server */
     try {
-      const res = await fetch(`/search?q=${encodeURIComponent(query)}&p=${page}`);
+      const res  = await fetch(`/search?q=${encodeURIComponent(query)}&p=${page}`);
       const data = await res.json();
 
       if (data.error) {
-        container.innerHTML = `<div class="state-box"><span class="error-msg">${data.error}</span></div>`;
+        container.innerHTML = `<div class="state-box"><span class="error-msg">${escHtml(data.error)}</span></div>`;
         return;
       }
 
       if (!data.results || data.results.length === 0) {
         container.innerHTML = `
           <div class="state-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
-            <span>No results found for <strong style="color:var(--text)">"${escHtml(query)}"</strong></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+            </svg>
+            <span>No results for <strong style="color:var(--text)">"${escHtml(query)}"</strong></span>
+            <small style="color:var(--muted);font-size:13px">Add seed URLs in /admin and run the crawler first.</small>
           </div>`;
         return;
       }
@@ -424,22 +505,17 @@
         html += `
           <div class="result-card" style="animation-delay:${Math.min(i * 0.04, 0.2)}s">
             <div class="result-url">${escHtml(r.displayUrl || r.url)}</div>
-            <a class="result-title" href="${escHtml(r.url)}">${escHtml(r.title)}</a>
+            <button class="result-title" onclick="openInFrame(${JSON.stringify(r.url)})">${escHtml(r.title)}</button>
             <div class="result-snippet">${escHtml(r.snippet)}</div>
           </div>
           ${i < data.results.length - 1 ? '<hr class="divider">' : ''}
         `;
       });
 
-      // Pagination
       html += `<div class="pagination">`;
-      if (page > 1) {
-        html += `<button class="page-btn" onclick="doSearch('${escHtml(currentQuery)}', ${page - 1})">← Prev</button>`;
-      }
+      if (page > 1) html += `<button class="page-btn" onclick="doSearch(currentQuery,${page-1})">← Prev</button>`;
       html += `<button class="page-btn active" disabled>Page ${page}</button>`;
-      if (data.results.length >= 8) {
-        html += `<button class="page-btn" onclick="doSearch('${escHtml(currentQuery)}', ${page + 1})">Next →</button>`;
-      }
+      if (data.results.length >= 8) html += `<button class="page-btn" onclick="doSearch(currentQuery,${page+1})">Next →</button>`;
       html += `</div>`;
 
       container.innerHTML = html;
@@ -450,16 +526,81 @@
     }
   }
 
-  function escHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+  /* ════════════════════════════════════════════
+     IFRAME PANEL
+     Opens result pages inside a slide-in panel
+     instead of navigating away.
+     Note: many big sites (YouTube, Google, etc.)
+     block iframes via X-Frame-Options / CSP.
+     When that happens we show a "blocked" message
+     with a fallback link.
+  ════════════════════════════════════════════ */
+  function openInFrame(url) {
+    const modal    = document.getElementById('iframe-modal');
+    const iframe   = document.getElementById('iframe-viewer');
+    const urlBar   = document.getElementById('iframe-url-bar');
+    const newTab   = document.getElementById('iframe-new-tab');
+    const blocked  = document.getElementById('iframe-blocked');
+    const bLink    = document.getElementById('iframe-blocked-link');
+
+    urlBar.textContent = url;
+    newTab.href        = url;
+    bLink.href         = url;
+
+    /* Reset */
+    iframe.style.display  = 'block';
+    blocked.style.display = 'none';
+    iframe.src = '';
+
+    modal.style.display          = 'block';
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => { iframe.src = url; }, 50);
+
+    /*
+      Cross-origin iframe blocking detection:
+      If the site sends X-Frame-Options: DENY/SAMEORIGIN or a
+      restricting CSP, the browser refuses to render the page.
+      We can't read the iframe's document cross-origin, so we
+      use this heuristic: try to access contentDocument; if it's
+      accessible but empty the frame was blocked; if access throws
+      it's a normal cross-origin load (not blocked).
+    */
+    iframe.onload = () => {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!doc || !doc.body || doc.body.innerHTML.trim() === '') showBlocked();
+      } catch (_) {
+        /* Cross-origin throw = page loaded fine — do nothing */
+      }
+    };
+
+    document.addEventListener('keydown', onEscClose);
   }
 
-  // Browser back/forward
+  function showBlocked() {
+    document.getElementById('iframe-viewer').style.display  = 'none';
+    document.getElementById('iframe-blocked').style.display = 'flex';
+  }
+
+  function closeIframe() {
+    document.getElementById('iframe-modal').style.display  = 'none';
+    document.getElementById('iframe-viewer').src           = '';
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', onEscClose);
+  }
+
+  function onEscClose(e) { if (e.key === 'Escape') closeIframe(); }
+
+  function escHtml(str) {
+    return String(str || '')
+      .replace(/&/g,  '&amp;')
+      .replace(/</g,  '&lt;')
+      .replace(/>/g,  '&gt;')
+      .replace(/"/g,  '&quot;')
+      .replace(/'/g,  '&#39;');
+  }
+
   window.addEventListener('popstate', () => {
     const params = new URLSearchParams(location.search);
     const q = params.get('q');

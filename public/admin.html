@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jay's — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #060608; --surface: #0e0e12; --surface2: #16161c;
+      --border: #1e1e26; --accent: #4f8bff; --text: #e8e8f0;
+      --muted: #6b6b80; --green: #4caf82; --red: #ff5f5f; --yellow: #f0b429;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-weight: 300; min-height: 100vh; padding: 0; }
+
+    .topbar {
+      background: rgba(6,6,8,0.9); border-bottom: 1px solid var(--border);
+      padding: 14px 32px; display: flex; align-items: center; gap: 20px;
+      position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px);
+    }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: .05em;
+      background: linear-gradient(135deg, #fff 30%, #4f8bff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+      padding: 4px 10px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .topbar a { color: var(--muted); font-size: 13px; text-decoration: none; margin-left: auto; }
+    .topbar a:hover { color: var(--text); }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 40px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+      display: flex; flex-direction: column; gap: 6px; }
+    .stat-card .val { font-size: 32px; font-weight: 600; line-height: 1; }
+    .stat-card .lbl { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .stat-card.green .val { color: var(--green); }
+    .stat-card.blue .val { color: var(--accent); }
+    .stat-card.yellow .val { color: var(--yellow); }
+
+    .section { margin-bottom: 36px; }
+    .section-title { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+
+    /* ── INPUT ROW ── */
+    .input-row { display: flex; gap: 10px; }
+    .input-row input, .input-row select {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; font-family: 'Outfit', sans-serif;
+      font-size: 14px; color: var(--text); outline: none;
+      transition: border-color .2s;
+    }
+    .input-row input:focus, .input-row select:focus { border-color: var(--accent); }
+    .input-row select { flex: 0 0 auto; }
+    input::placeholder { color: var(--muted); }
+
+    /* ── BUTTONS ── */
+    button {
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 500;
+      border: none; border-radius: 8px; padding: 11px 20px; cursor: pointer;
+      transition: opacity .15s, transform .1s; white-space: nowrap;
+    }
+    button:active { transform: scale(0.97); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: .88; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-danger:hover { opacity: .85; }
+    .btn-ghost { background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { border-color: var(--accent); }
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-green:hover { opacity: .85; }
+
+    /* ── SEEDS LIST ── */
+    .seed-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+    .seed-item { display: flex; align-items: center; gap: 12px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+    .seed-url { flex: 1; font-size: 13px; color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .seed-del { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer;
+      padding: 0 4px; transition: color .15s; line-height: 1; }
+    .seed-del:hover { color: var(--red); }
+
+    /* ── CRAWL CONTROLS ── */
+    .crawl-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .crawl-status { font-size: 13px; padding: 8px 14px; border-radius: 8px; background: var(--surface2);
+      border: 1px solid var(--border); color: var(--muted); }
+    .crawl-status.active { border-color: var(--green); color: var(--green); }
+    .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); margin-right: 6px; animation: pulse 1.2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+    /* ── RECENT PAGES ── */
+    .page-list { display: flex; flex-direction: column; gap: 0; }
+    .page-item { display: flex; align-items: center; gap: 12px; padding: 10px 0;
+      border-bottom: 1px solid var(--border); font-size: 13px; }
+    .page-item:last-child { border-bottom: none; }
+    .page-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .page-domain { color: var(--green); font-size: 11px; width: 140px; flex-shrink: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .page-time { color: var(--muted); font-size: 11px; flex-shrink: 0; }
+
+    /* ── OPTION ROW ── */
+    .option-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .option-row label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .option-row input[type="number"] {
+      width: 80px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 8px 10px; color: var(--text);
+      font-family: 'Outfit', sans-serif; font-size: 13px; outline: none;
+    }
+    .option-row input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px;
+      font-size: 13px; opacity: 0; transform: translateY(8px);
+      transition: opacity .25s, transform .25s; pointer-events: none; z-index: 999; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.ok { border-color: var(--green); color: var(--green); }
+    .toast.err { border-color: var(--red); color: var(--red); }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Jay's</div>
+  <div class="badge">Admin</div>
+  <a href="/">← Back to search</a>
+</div>
+
+<div class="container">
+
+  <!-- Stats -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card blue"><div class="val" id="stat-pages">—</div><div class="lbl">Pages indexed</div></div>
+    <div class="stat-card yellow"><div class="val" id="stat-queue">—</div><div class="lbl">In queue</div></div>
+    <div class="stat-card green"><div class="val" id="stat-seeds">—</div><div class="lbl">Seeds</div></div>
+  </div>
+
+  <!-- Crawl Controls -->
+  <div class="section">
+    <div class="section-title">Crawler</div>
+    <div class="card">
+      <div class="crawl-row">
+        <div class="crawl-status" id="crawl-status">Idle</div>
+        <button class="btn-green" id="btn-start" onclick="startCrawl()">▶ Start Crawl</button>
+        <button class="btn-ghost" id="btn-stop" onclick="stopCrawl()" style="display:none">■ Stop</button>
+        <button class="btn-danger" onclick="clearIndex()" style="margin-left:auto">🗑 Clear Index</button>
+      </div>
+      <div class="option-row">
+        <label>Max pages: <input type="number" id="max-pages" value="100" min="1" max="500" /></label>
+        <label><input type="checkbox" id="same-domain" /> Same domain only</label>
+      </div>
+      <div id="crawl-stats" style="font-size:13px;color:var(--muted);display:none"></div>
+    </div>
+  </div>
+
+  <!-- Seeds -->
+  <div class="section">
+    <div class="section-title">Seed URLs</div>
+    <div class="card">
+      <div class="input-row">
+        <input type="text" id="seed-input" placeholder="https://example.com" />
+        <button class="btn-primary" onclick="addSeed()">Add Seed</button>
+      </div>
+      <div class="seed-list" id="seed-list"></div>
+    </div>
+  </div>
+
+  <!-- Recently Crawled -->
+  <div class="section">
+    <div class="section-title">Recently crawled</div>
+    <div class="card">
+      <div class="page-list" id="page-list">
+        <div style="color:var(--muted);font-size:13px">No pages indexed yet.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let pollInterval = null;
+
+  async function loadStats() {
+    const r = await fetch('/admin/stats');
+    const d = await r.json();
+
+    document.getElementById('stat-pages').textContent = d.pages.toLocaleString();
+    document.getElementById('stat-queue').textContent = d.crawl.queued ?? '—';
+    document.getElementById('stat-seeds').textContent = d.seeds.length;
+
+    const statusEl = document.getElementById('crawl-status');
+    const startBtn = document.getElementById('btn-start');
+    const stopBtn = document.getElementById('btn-stop');
+    const statsEl = document.getElementById('crawl-stats');
+
+    if (d.crawling) {
+      statusEl.innerHTML = `<span class="dot"></span> Crawling…`;
+      statusEl.className = 'crawl-status active';
+      startBtn.style.display = 'none';
+      stopBtn.style.display = '';
+      statsEl.style.display = 'block';
+      statsEl.textContent = `Crawled: ${d.crawl.crawled ?? 0}  ·  Failed: ${d.crawl.failed ?? 0}`;
+    } else {
+      statusEl.innerHTML = 'Idle';
+      statusEl.className = 'crawl-status';
+      startBtn.style.display = '';
+      stopBtn.style.display = 'none';
+      statsEl.style.display = 'none';
+    }
+
+    // Seeds
+    const sl = document.getElementById('seed-list');
+    sl.innerHTML = d.seeds.length
+      ? d.seeds.map(s => `
+          <div class="seed-item">
+            <div class="seed-url">${escHtml(s.url)}</div>
+            <button class="seed-del" onclick="deleteSeed(${s.id})" title="Remove">×</button>
+          </div>`).join('')
+      : '<div style="font-size:13px;color:var(--muted);margin-top:12px">No seeds yet. Add a URL above to get started.</div>';
+
+    // Recent pages
+    const pl = document.getElementById('page-list');
+    pl.innerHTML = d.recent.length
+      ? d.recent.map(p => `
+          <div class="page-item">
+            <div class="page-domain">${escHtml(p.domain || '')}</div>
+            <div class="page-title">${escHtml(p.title || p.url)}</div>
+            <div class="page-time">${timeAgo(p.last_crawled)}</div>
+          </div>`).join('')
+      : '<div style="font-size:13px;color:var(--muted)">No pages indexed yet.</div>';
+  }
+
+  async function addSeed() {
+    const input = document.getElementById('seed-input');
+    const url = input.value.trim();
+    if (!url) return;
+    const r = await fetch('/admin/seeds', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    const d = await r.json();
+    if (d.ok) { input.value = ''; toast('Seed added!', 'ok'); loadStats(); }
+    else toast(d.error || 'Error', 'err');
+  }
+
+  async function deleteSeed(id) {
+    await fetch(`/admin/seeds/${id}`, { method: 'DELETE' });
+    toast('Seed removed', 'ok');
+    loadStats();
+  }
+
+  async function startCrawl() {
+    const maxPages = parseInt(document.getElementById('max-pages').value) || 100;
+    const sameDomain = document.getElementById('same-domain').checked;
+    const r = await fetch('/admin/crawl/start', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ maxPages, sameDomain }),
+    });
+    const d = await r.json();
+    toast(d.message || 'Started!', 'ok');
+    loadStats();
+    clearInterval(pollInterval);
+    pollInterval = setInterval(loadStats, 2000);
+  }
+
+  async function stopCrawl() {
+    await fetch('/admin/crawl/stop', { method: 'POST' });
+    toast('Stopping…', 'ok');
+    clearInterval(pollInterval);
+    setTimeout(loadStats, 800);
+  }
+
+  async function clearIndex() {
+    if (!confirm('Delete all indexed pages? This cannot be undone.')) return;
+    await fetch('/admin/index', { method: 'DELETE' });
+    toast('Index cleared', 'ok');
+    loadStats();
+  }
+
+  // Enter key on seed input
+  document.getElementById('seed-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addSeed();
+  });
+
+  function toast(msg, type = 'ok') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = `toast ${type} show`;
+    setTimeout(() => el.className = 'toast', 2500);
+  }
+
+  function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function timeAgo(iso) {
+    if (!iso) return '';
+    const diff = Date.now() - new Date(iso).getTime();
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return 'just now';
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    return `${Math.floor(h / 24)}d ago`;
+  }
+
+  loadStats();
+</script>
+</body>
+</html>

@@ -1,86 +1,118 @@
 const express = require("express");
-const axios = require("axios");
 const path = require("path");
+const db = require("./db");
+const { startCrawl, stopCrawl, isCrawling, getStats } = require("./crawler");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
 
-// Public SearXNG instances with JSON API — tried in order until one works
-const SEARX_INSTANCES = [
-  "https://searx.be",
-  "https://paulgo.io",
-  "https://search.mdosch.de",
-  "https://searxng.site",
-  "https://search.bus-hit.me",
-];
+// ── SEARCH ──────────────────────────────────────────────────────────────────
+app.get("/search", (req, res) => {
+  const query = (req.query.q || "").trim();
+  const page = Math.max(1, parseInt(req.query.p) || 1);
+  const perPage = 10;
+  const offset = (page - 1) * perPage;
 
-async function fetchFromSearx(query, page) {
-  const params = new URLSearchParams({
-    q: query,
-    format: "json",
-    pageno: page,
-    language: "en",
-    engines: "google,bing,duckduckgo",
-  });
+  if (!query) return res.json({ results: [], query: "", page: 1 });
 
-  const headers = {
-    "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    Accept: "application/json, text/javascript, */*",
-    "Accept-Language": "en-US,en;q=0.9",
-  };
-
-  for (const instance of SEARX_INSTANCES) {
-    try {
-      const res = await axios.get(`${instance}/search?${params}`, {
-        headers,
-        timeout: 7000,
-      });
-
-      if (res.data && Array.isArray(res.data.results)) {
-        return res.data.results;
-      }
-    } catch (err) {
-      console.warn(`Instance ${instance} failed: ${err.message}`);
-      // try next
-    }
+  const total = db.prepare("SELECT COUNT(*) as c FROM pages").get().c;
+  if (total === 0) {
+    return res.json({
+      results: [],
+      query,
+      page,
+      empty: true,
+      message: "Your index is empty. Go to /admin to add seeds and start crawling.",
+    });
   }
 
-  throw new Error("All search instances failed");
-}
-
-app.get("/search", async (req, res) => {
-  const query = (req.query.q || "").trim();
-  const page = parseInt(req.query.p) || 1;
-
-  if (!query) return res.json({ results: [], query: "" });
-
   try {
-    const raw = await fetchFromSearx(query, page);
+    // Use FTS5 with snippet highlighting
+    const rows = db.prepare(`
+      SELECT
+        p.url, p.title, p.description, p.domain,
+        snippet(pages_fts, 2, '<<', '>>', '...', 20) AS snippet
+      FROM pages_fts
+      JOIN pages p ON pages_fts.rowid = p.id
+      WHERE pages_fts MATCH ?
+      ORDER BY rank
+      LIMIT ? OFFSET ?
+    `).all(query + "*", perPage, offset); // prefix match: "you" matches "youtube"
 
-    const results = raw
-      .filter((r) => r.url && r.title)
-      .map((r) => ({
-        title: r.title,
+    res.json({
+      results: rows.map((r) => ({
+        title: r.title || r.url,
         url: r.url,
-        snippet: r.content || "",
-        displayUrl: (() => {
-          try {
-            const u = new URL(r.url);
-            return u.hostname + (u.pathname !== "/" ? u.pathname : "");
-          } catch {
-            return r.url;
-          }
-        })(),
-      }));
-
-    res.json({ results, query, page });
+        displayUrl: r.domain || r.url,
+        snippet: r.description || r.snippet || "",
+      })),
+      query,
+      page,
+    });
   } catch (err) {
     console.error("Search error:", err.message);
-    res.status(500).json({ error: "Search failed. Please try again in a moment." });
+    res.status(500).json({ error: "Search failed: " + err.message });
   }
 });
 
-app.listen(PORT, () => console.log(`Jay's Search running on port ${PORT}`));
+// ── ADMIN API ────────────────────────────────────────────────────────────────
+
+// Stats
+app.get("/admin/stats", (req, res) => {
+  const pages = db.prepare("SELECT COUNT(*) as c FROM pages").get().c;
+  const seeds = db.prepare("SELECT * FROM seeds ORDER BY added DESC").all();
+  const recent = db.prepare(
+    "SELECT url, title, domain, last_crawled FROM pages ORDER BY last_crawled DESC LIMIT 15"
+  ).all();
+  res.json({ pages, seeds, recent, crawl: getStats(), crawling: isCrawling() });
+});
+
+// Add seed
+app.post("/admin/seeds", (req, res) => {
+  let { url } = req.body;
+  if (!url) return res.status(400).json({ error: "URL required" });
+  try {
+    if (!url.startsWith("http")) url = "https://" + url;
+    new URL(url); // validate
+    db.prepare("INSERT OR IGNORE INTO seeds (url) VALUES (?)").run(url);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(400).json({ error: "Invalid URL" });
+  }
+});
+
+// Remove seed
+app.delete("/admin/seeds/:id", (req, res) => {
+  db.prepare("DELETE FROM seeds WHERE id = ?").run(req.params.id);
+  res.json({ ok: true });
+});
+
+// Start crawl
+app.post("/admin/crawl/start", (req, res) => {
+  if (isCrawling()) return res.json({ ok: false, message: "Already crawling" });
+  const maxPages = Math.min(parseInt(req.body.maxPages) || 100, 500);
+  const sameDomain = !!req.body.sameDomain;
+  startCrawl({ maxPages, sameDomain });
+  res.json({ ok: true, message: `Crawling up to ${maxPages} pages…` });
+});
+
+// Stop crawl
+app.post("/admin/crawl/stop", (req, res) => {
+  stopCrawl();
+  res.json({ ok: true });
+});
+
+// Clear index
+app.delete("/admin/index", (req, res) => {
+  db.prepare("DELETE FROM pages").run();
+  db.prepare("DELETE FROM crawl_queue").run();
+  db.prepare("INSERT INTO pages_fts(pages_fts) VALUES('rebuild')").run();
+  res.json({ ok: true });
+});
+
+app.listen(PORT, () =>
+  console.log(`Jay's Search running → http://localhost:${PORT}`)
+);

@@ -11,22 +11,36 @@ app.use(express.json());
 
 function searchIndex(query, page = 1, perPage = 10) {
   const offset = (page - 1) * perPage;
+  const words = query.trim().split(/\s+/);
+  // Build FTS match: every word must appear (AND logic)
+  const ftsQuery = words.map(w => w.replace(/[^a-zA-Z0-9]/g, '') + '*').filter(Boolean).join(' AND ');
   try {
-    return db.prepare(`
+    const rows = db.prepare(`
       SELECT p.url, p.title, p.description, p.domain,
-             snippet(pages_fts, 2, '<<', '>>', '...', 20) AS snippet
+             snippet(pages_fts, 2, '<<', '>>', '...', 20) AS snippet,
+             rank
       FROM pages_fts
       JOIN pages p ON pages_fts.rowid = p.id
       WHERE pages_fts MATCH ?
       ORDER BY rank
       LIMIT ? OFFSET ?
-    `).all(query + "*", perPage, offset);
+    `).all(ftsQuery, perPage * 3, offset); // fetch more, then filter
+
+    // Filter: at least one word must appear in title or description
+    const lower = query.toLowerCase();
+    const queryWords = words.map(w => w.toLowerCase()).filter(w => w.length > 1);
+    const relevant = rows.filter(r => {
+      const haystack = ((r.title || '') + ' ' + (r.description || '')).toLowerCase();
+      return queryWords.some(w => haystack.includes(w));
+    });
+
+    // Fall back to all rows if filter removed everything (e.g. content-only match is better than nothing)
+    return (relevant.length > 0 ? relevant : rows).slice(0, perPage);
   } catch {
-    // FTS match syntax error — fall back to LIKE
     return db.prepare(`
       SELECT url, title, description, domain, '' as snippet
       FROM pages
-      WHERE title LIKE ? OR content LIKE ?
+      WHERE title LIKE ? OR description LIKE ?
       LIMIT ? OFFSET ?
     `).all(`%${query}%`, `%${query}%`, perPage, offset);
   }

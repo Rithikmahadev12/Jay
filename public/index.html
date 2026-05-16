@@ -391,7 +391,14 @@
     }
 
     const container = document.getElementById('results-container');
-    container.innerHTML = `<div class="state-box"><div class="spinner"></div><span>Searching…</span></div>`;
+
+    // Detect if query looks like a URL — may need to crawl first
+    const looksLikeUrl = /^https?:\/\//i.test(query) || (!query.includes(' ') && /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}/.test(query));
+    if (looksLikeUrl) {
+      container.innerHTML = `<div class="state-box"><div class="spinner"></div><span>Crawling <strong style="color:var(--accent)">${escHtml(query)}</strong> for the first time…<br><small style="color:var(--muted);margin-top:8px;display:block">This takes 10–20 seconds</small></span></div>`;
+    } else {
+      container.innerHTML = `<div class="state-box"><div class="spinner"></div><span>Searching…</span></div>`;
+    }
 
     try {
       const res = await fetch(`/search?q=${encodeURIComponent(query)}&p=${page}`);
